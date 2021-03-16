@@ -1,0 +1,63 @@
+<html>
+<title>Test</title>
+<body>
+<center>Test</center>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<div id="chart_div"></div>
+
+<script>
+
+google.charts.load('current', {
+  packages: ['corechart']
+}).then(function () {
+  // create chart
+  var container = $('#chart_div').get(0);
+  var chart = new google.visualization.LineChart(container);
+  var options = {
+    legend: {
+      position: 'top'
+    }
+  };
+
+  // create data table
+  var data = new google.visualization.DataTable();
+  data.addColumn('string', 'Date');
+  data.addColumn('number', 'Weight');
+  data.addColumn('number', 'Calories');
+
+  // get data
+  $.ajax({
+    url: 'path to python',
+    dataType: 'json'
+  }).done(function (jsonData) {
+    loadData(jsonData);
+  }).fail(function (jqXHR, textStatus, errorThrown) {
+    var jsonData = [{'id': 1, 'weight': 180, 'calories': 2100, 'rewards': 1, 'date': '2018-04-14'}, {'id': 1, 'weight': 185, 'calories': 1800, 'rewards': -1, 'date': '2018-04-15'}, {'id': 1, 'weight': 180, 'calories': 1600, 'rewards': 1, 'date': '2018-04-13'}, {'id': 1, 'weight': 180, 'calories': 1900, 'rewards': -2, 'date': '2018-04-12'}, {'id': 1, 'weight': 186, 'calories': 1111, 'rewards': 5, 'date': '2018-04-16'}, {'id': 1, 'weight': 184, 'calories': 1200, 'rewards': 5, 'date': '2018-04-17'}, {'id': 1, 'weight': 184, 'calories': 1400, 'rewards': 3, 'date': '2018-04-18'}, {'id': 1, 'weight': 180, 'calories': 2100, 'rewards': -4, 'date': '2018-04-11'}];
+    loadData(jsonData);
+  });
+
+  // load json data
+  function loadData(jsonData) {
+    $.each(jsonData, function(index, row) {
+      data.addRow([
+        row.date,
+        row.weight,
+        row.calories
+      ]);
+    });
+    drawChart();
+  }
+
+  // draw chart
+  $(window).resize(drawChart);
+  function drawChart() {
+    chart.draw(data, options);
+  }
+});
+
+</script>
+
+</body>
+</html>
